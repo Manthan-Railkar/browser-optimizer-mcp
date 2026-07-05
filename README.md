@@ -124,7 +124,24 @@ Add this to your `claude_desktop_config.json` (located at `%APPDATA%\Claude\clau
 }
 ```
 
-### 2. Antigravity IDE / Cursor Setup
+### 2. Antigravity IDE Setup
+Add this to your `mcp_config.json` file (located at `%USERPROFILE%\.gemini\config\mcp_config.json` on Windows or `~/.gemini/config/mcp_config.json` on macOS/Linux):
+
+```json
+{
+  "mcpServers": {
+    "browser-optimizer": {
+      "command": "c:\\Users\\Manthan Railkar\\Desktop\\Git\\browser-optimizer-mcp\\venv\\Scripts\\python.exe",
+      "args": ["-m", "app.server.main"],
+      "env": {
+        "PYTHONPATH": "c:\\Users\\Manthan Railkar\\Desktop\\Git\\browser-optimizer-mcp"
+      }
+    }
+  }
+}
+```
+
+### 3. Cursor Setup
 1. Go to **Settings** -> **Features** -> **MCP**.
 2. Click **+ Add New MCP Server**.
 3. Configure the parameters:

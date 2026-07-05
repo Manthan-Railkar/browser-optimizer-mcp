@@ -52,6 +52,23 @@ sequenceDiagram
 
 ---
 
+## 🛠️ MCP Tools Reference
+
+The server registers and exposes the following tools:
+
+| Tool | Parameters | Return Type | Description |
+| :--- | :--- | :--- | :--- |
+| `extract_context` | `url` (string) | `CompressedContext` | Navigates to a URL, performs cleanup and compression, runs page classification, and returns optimized UI and ARIA trees. |
+| `page_diff` | `url` (string) | `PageDiff` | Returns deltas (added/removed elements) compared to the last observed state of this URL. |
+| `execute_action` | `action` (string), `selector` (optional), `value` (optional) | `ActionResult` | Executes standard interactions (`click`, `type`, `select`, `scroll`, `wait`, `navigate`) on the active page. |
+| `summarize_page` | `url` (string) | `Dict` | Produces an instant text summary listing interactive element counts and text content snippets. |
+| `classify_page` | `url` (string) | `ClassificationResult` | Evaluates UI elements to identify the page category (e.g. login, search, survey). |
+| `wait_until_ready` | `url` (string), `timeout` (optional) | `ActionResult` | Navigates to a page and waits for browser stabilization. |
+| `cache_lookup` | `url` (string) | `Dict` | Directly queries the semantic cache for stored context. |
+| `get_metrics` | None | `Dict` | Retrieves telemetry (bytes saved, cache hit rate, total actions). |
+
+---
+
 ## 📂 About the Code & Module Architecture
 
 The codebase is structured modularly under the `app/` directory:

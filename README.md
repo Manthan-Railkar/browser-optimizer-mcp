@@ -108,21 +108,43 @@ BROWSER_TIMEOUT=30000
 ## 🖥️ Client Integration
 
 ### 1. Claude Desktop Setup
-Add this to your `claude_desktop_config.json` (located at `%APPDATA%\Claude\claude_desktop_config.json` on Windows or `~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+Add the configuration to your `claude_desktop_config.json` file (located at `%APPDATA%\Claude\claude_desktop_config.json` on Windows or `~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
 
+#### For Windows (uses the `cmd` wrapper to handle folder spaces):
 ```json
 {
   "mcpServers": {
     "browser-optimizer": {
-      "command": "c:\\Users\\Manthan Railkar\\Desktop\\Git\\browser-optimizer-mcp\\venv\\Scripts\\python.exe",
-      "args": ["-m", "app.server.main"],
+      "command": "cmd",
+      "args": [
+        "/c",
+        "C:\\path\\to\\browser-optimizer-mcp\\venv\\Scripts\\python.exe",
+        "-m",
+        "app.server.main"
+      ],
       "env": {
-        "PYTHONPATH": "c:\\Users\\Manthan Railkar\\Desktop\\Git\\browser-optimizer-mcp"
+        "PYTHONPATH": "C:\\path\\to\\browser-optimizer-mcp"
       }
     }
   }
 }
 ```
+
+#### For macOS / Linux:
+```json
+{
+  "mcpServers": {
+    "browser-optimizer": {
+      "command": "/path/to/browser-optimizer-mcp/venv/bin/python",
+      "args": ["-m", "app.server.main"],
+      "env": {
+        "PYTHONPATH": "/path/to/browser-optimizer-mcp"
+      }
+    }
+  }
+}
+```
+
 
 ### 2. Antigravity IDE Setup
 Add this to your `mcp_config.json` file (located at `%USERPROFILE%\.gemini\config\mcp_config.json` on Windows or `~/.gemini/config/mcp_config.json` on macOS/Linux):
@@ -131,10 +153,10 @@ Add this to your `mcp_config.json` file (located at `%USERPROFILE%\.gemini\confi
 {
   "mcpServers": {
     "browser-optimizer": {
-      "command": "c:\\Users\\Manthan Railkar\\Desktop\\Git\\browser-optimizer-mcp\\venv\\Scripts\\python.exe",
+      "command": "C:\\path\\to\\browser-optimizer-mcp\\venv\\Scripts\\python.exe",
       "args": ["-m", "app.server.main"],
       "env": {
-        "PYTHONPATH": "c:\\Users\\Manthan Railkar\\Desktop\\Git\\browser-optimizer-mcp"
+        "PYTHONPATH": "C:\\path\\to\\browser-optimizer-mcp"
       }
     }
   }
@@ -147,8 +169,8 @@ Add this to your `mcp_config.json` file (located at `%USERPROFILE%\.gemini\confi
 3. Configure the parameters:
    * **Name**: `browser-optimizer`
    * **Type**: `command`
-   * **Command**: `c:\Users\Manthan Railkar\Desktop\Git\browser-optimizer-mcp\venv\Scripts\python.exe -m app.server.main`
-4. Set the environment variable `PYTHONPATH` = `c:\Users\Manthan Railkar\Desktop\Git\browser-optimizer-mcp`.
+   * **Command**: `C:\path\to\browser-optimizer-mcp\venv\Scripts\python.exe -m app.server.main`
+4. Set the environment variable `PYTHONPATH` = `C:\path\to\browser-optimizer-mcp`.
 5. Click **Save**.
 
 ---
@@ -195,6 +217,6 @@ docker compose -f docker/docker-compose.yml up --build
 
 ## 📄 License
 
-Distributed under the MIT License. See [LICENSE](file:///c:/Users/Manthan%20Railkar/Desktop/Git/browser-optimizer-mcp/LICENSE) for more details.
+Distributed under the MIT License. See [LICENSE](LICENSE) for more details.
 
 Copyright (c) 2026 Manthan.

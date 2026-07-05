@@ -91,7 +91,10 @@ def _merge_mcp_config(config_path: Path, server_key: str = "browser-optimizer") 
         existing: dict = {}
         if config_path.exists():
             with config_path.open("r", encoding="utf-8") as f:
-                existing = json.load(f)
+                try:
+                    existing = json.load(f)
+                except json.JSONDecodeError:
+                    existing = {}
 
         existing.setdefault("mcpServers", {})[server_key] = _mcp_entry()
 

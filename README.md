@@ -52,6 +52,25 @@ sequenceDiagram
 
 ---
 
+## Use Cases
+
+Here are 10 key use cases where the Browser Optimizer MCP can be utilized:
+
+1. **AI Agent Cost Reduction**: Reduces token usage on dense web pages (like e-commerce portals or social media feeds) by up to 98%, dramatically lowering LLM API costs.
+2. **Structured Web Scraping**: Empowers LLM-based scrapers to locate and extract content from specific elements without parsing scripts, styles, or bloated HTML trees.
+3. **Automated UI/E2E Testing**: Helps developers run fast assertion checks on UI changes by using delta diffing to detect structural regressions.
+4. **Form Auto-Filling**: Provides clean, interactive element trees, allowing agents to fill forms, log in, or interact with custom widgets without parsing complex nested divs.
+5. **Real-time Page Monitoring**: Monitors active pages for updates using delta diffing, alerting agents only when new interactive components are added or removed.
+6. **Web Search & RAG Pipelines**: Acts as an efficient web crawler that strips boilerplates (headers, footers, etc.) and provides clean context for Retrieval-Augmented Generation.
+7. **Accessibility Compliance Audits**: Exposes semantic ARIA accessibility trees, letting automated agents inspect pages for accessibility compliance.
+8. **E-Commerce Monitoring**: Navigates product listings, classifies page types, and extracts price/stock updates with minimal payload sizes.
+9. **Dynamic Single Page Application (SPA) Automation**: Handles modern JavaScript-heavy frameworks by running Playwright locally, caching states, and delivering optimized components.
+10. **Multi-Agent Browser Sharing**: Serves as a standardized MCP bridge for multi-agent workflows, letting separate agents share, observe, and control the same browser session.
+
+and many more...
+
+---
+
 ## 🛠️ MCP Tools Reference
 
 The server registers and exposes the following tools:

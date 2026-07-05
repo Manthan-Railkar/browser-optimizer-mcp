@@ -4,8 +4,8 @@ Handles launching, session contexts, page management, and teardown.
 """
 
 from playwright.async_api import async_playwright
-from app.config.settings import settings
-from app.utils.logger import logger
+from browser_optimizer.config.settings import settings
+from browser_optimizer.utils.logger import logger
 
 
 class BrowserManager:

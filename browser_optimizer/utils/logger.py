@@ -1,5 +1,5 @@
 from loguru import logger 
-from app.config.settings import settings 
+from browser_optimizer.config.settings import settings 
 import sys 
 
 logger.remove() 

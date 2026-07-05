@@ -3,7 +3,7 @@ Page data extraction module.
 Extracts HTML raw source, parses it via BeautifulSoup, and gets ARIA accessibility trees.
 """
 
-from app.utils.logger import logger
+from browser_optimizer.utils.logger import logger
 from bs4 import BeautifulSoup
 
 

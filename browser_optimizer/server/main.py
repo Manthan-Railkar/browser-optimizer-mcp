@@ -2,16 +2,16 @@ import asyncio
 from typing import Dict, Any, Optional
 from mcp.server.fastmcp import FastMCP
 
-from app.config.settings import settings
-from app.utils.logger import logger
-from app.browser.manager import manager
-from app.extractor.extractor import extractor
-from app.compressor.compressor import compressor
-from app.classifier.classifier import classifier as page_classifier
-from app.cache.cache import semantic_cache
-from app.diff.diff import difference_engine
-from app.executor.executor import executor as action_executor
-from app.metrics.metrics import metrics
+from browser_optimizer.config.settings import settings
+from browser_optimizer.utils.logger import logger
+from browser_optimizer.browser.manager import manager
+from browser_optimizer.extractor.extractor import extractor
+from browser_optimizer.compressor.compressor import compressor
+from browser_optimizer.classifier.classifier import classifier as page_classifier
+from browser_optimizer.cache.cache import semantic_cache
+from browser_optimizer.diff.diff import difference_engine
+from browser_optimizer.executor.executor import executor as action_executor
+from browser_optimizer.metrics.metrics import metrics
 
 # Initialize FastMCP Server
 mcp = FastMCP("Browser Optimization MCP")

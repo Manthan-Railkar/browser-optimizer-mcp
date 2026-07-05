@@ -1,6 +1,6 @@
 import threading
 from typing import Dict, Any
-from app.utils.logger import logger
+from browser_optimizer.utils.logger import logger
 
 class MetricsTracker:
     def __init__(self):

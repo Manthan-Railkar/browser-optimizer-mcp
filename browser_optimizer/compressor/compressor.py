@@ -4,7 +4,7 @@ Strips out unneeded DOM nodes and extracts interactive UI elements to minimize t
 """
 
 from bs4 import BeautifulSoup
-from app.utils.logger import logger
+from browser_optimizer.utils.logger import logger
 
 # Non-essential elements to decompose
 IGNORED_TAGS = {"script", "style", "footer", "header", "noscript", "svg", "iframe"}

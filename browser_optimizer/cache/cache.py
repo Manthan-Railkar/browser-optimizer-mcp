@@ -7,8 +7,8 @@ import time
 import xxhash
 from cachetools import TTLCache
 from typing import Dict, Any, Optional
-from app.config.settings import settings
-from app.utils.logger import logger
+from browser_optimizer.config.settings import settings
+from browser_optimizer.utils.logger import logger
 
 class SemanticCache:
     """

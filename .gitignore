@@ -6,3 +6,8 @@ __pycache__/
 .coverage
 htmlcov/
 *.log
+
+# PyPI build artifacts
+dist/
+build/
+*.egg-info/

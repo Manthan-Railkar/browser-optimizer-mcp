@@ -1,5 +1,34 @@
 # Browser Optimizer MCP
 
+[![PyPI version](https://img.shields.io/pypi/v/browser-optimizer-mcp.svg)](https://pypi.org/project/browser-optimizer-mcp/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+## ⚡ Quick Install
+
+```bash
+pip install browser-optimizer-mcp
+browser-optimizer install
+```
+
+The `install` command automatically:
+- ✅ Checks your Python version (≥ 3.11 required)
+- ✅ Installs Playwright browser binaries (`chromium`)
+- ✅ Detects **Claude Desktop** and auto-writes its MCP config
+- ✅ Detects **Antigravity IDE** and auto-writes its MCP config
+- ✅ Prints manual setup instructions for **Cursor**
+- ✅ Verifies the installation end-to-end
+
+Once installed, start the server with:
+
+```bash
+browser-optimizer start
+```
+
+> **Tip:** Run `browser-optimizer doctor` at any time to diagnose your setup.
+
+---
+
 An optimization middleware layer built on top of **FastMCP** and **Playwright**. It sits between AI agents (LLMs) and browser automation frameworks to drastically reduce token usage, execution latency, and API inference costs while maintaining high accuracy for browser workflows.
 
 ---

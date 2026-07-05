@@ -5,7 +5,7 @@ Translates structured agent commands directly into Playwright browser interactio
 
 from playwright.async_api import Page
 from typing import Dict, Any, Optional
-from app.utils.logger import logger
+from browser_optimizer.utils.logger import logger
 
 class RuleBasedExecutor:
     """

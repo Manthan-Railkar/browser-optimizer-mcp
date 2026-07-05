@@ -4,7 +4,7 @@ Tracks historical states of pages and computes incremental UI deltas (adds/remov
 """
 
 from typing import List, Dict, Any, Optional
-from app.utils.logger import logger
+from browser_optimizer.utils.logger import logger
 
 class StateDifferenceEngine:
     """

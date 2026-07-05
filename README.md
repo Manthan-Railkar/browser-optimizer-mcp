@@ -4,50 +4,56 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## ⚡ Quick Install
+An optimization middleware layer built on top of **FastMCP** and **Playwright**. It sits between AI agents (LLMs) and browser automation frameworks to drastically reduce token usage, execution latency, and API inference costs while maintaining high accuracy for browser workflows.
+
+## Features
+
+- **Drastic Token Reduction**: Reduces LLM token usage by up to 98% by filtering out non-essential HTML elements.
+- **Smart Element Extraction**: Identifies and extracts only interactive UI components (buttons, links, inputs).
+- **Semantic Caching**: Implements fast in-memory caching using xxhash for instant page state retrieval.
+- **Delta Diffing**: Computes and returns only the changes between consecutive page states.
+- **Automated Classification**: Categorizes pages dynamically based on structural heuristics.
+
+## Quick Install
 
 ```bash
 pip install browser-optimizer-mcp
 browser-optimizer install
 ```
 
-The `install` command automatically:
-- ✅ Checks your Python version (≥ 3.11 required)
-- ✅ Installs Playwright browser binaries (`chromium`)
-- ✅ Detects **Claude Desktop** and auto-writes its MCP config
-- ✅ Detects **Antigravity IDE** and auto-writes its MCP config
-- ✅ Prints manual setup instructions for **Cursor**
-- ✅ Verifies the installation end-to-end
+The `install` command automatically performs the following setup:
+- Checks the local Python version (requires >= 3.11).
+- Installs Playwright browser binaries (`chromium`).
+- Detects **Claude Desktop** and automatically configures its MCP integration.
+- Detects **Antigravity IDE** and automatically configures its MCP integration.
+- Provides manual configuration instructions for **Cursor**.
+- Verifies the installation process end-to-end.
 
-Once installed, start the server with:
+Once installed, initiate the server using:
 
 ```bash
 browser-optimizer start
 ```
 
-> **Tip:** Run `browser-optimizer doctor` at any time to diagnose your setup.
+> **Note:** Execute `browser-optimizer doctor` at any time to run diagnostic checks on your environment.
 
 ---
 
-An optimization middleware layer built on top of **FastMCP** and **Playwright**. It sits between AI agents (LLMs) and browser automation frameworks to drastically reduce token usage, execution latency, and API inference costs while maintaining high accuracy for browser workflows.
+## How It Works & Process Flow
 
----
-
-## 🔄 How It Works & Process Flow
-
-### 1. Step-by-Step Execution Pipeline
-When an AI agent requests a page analysis, the Optimizer executes the following pipeline:
-1. **Request Intake**: The AI agent calls `extract_context` with a target URL.
-2. **Browser Navigation**: The browser manager opens or reuses a Playwright page and navigates to the URL.
-3. **HTML & Accessibility Tree Capture**: The extractor captures the raw HTML markup and generating a semantic ARIA snapshot of the page body.
-4. **xxhash Fingerprinting**: The semantic cache hashes the raw HTML to uniquely identify the page state.
-   * **Cache Hit**: If the hash matches a stored signature, the server returns the cached context in less than `1ms`, skipping DOM parsing and cleaning completely.
-   * **Cache Miss**: If it's a new page or the content changed, the extraction process continues.
-5. **Context Compression**: The compressor strips out styling, scripts, SVGs, and header/footer boilerplate. It extracts only interactable elements (buttons, inputs, dropdowns, links).
-6. **Task Classification**: The rule-based classifier analyzes the interactive elements to score and categorize the page type (e.g. login, product search, checkout).
-7. **Delta Diff Calculation**: The difference engine compares the fresh UI elements with the last observed state of this URL, outputting only added or removed controls.
-8. **Metrics Logging**: The metrics module records raw bytes, compressed bytes, and savings ratios.
-9. **Payload Delivery**: A compact JSON package containing the optimized UI elements, ARIA snapshot, and page metadata is returned to the agent.
+### 1. Execution Pipeline
+When an AI agent requests context from a web page, the optimizer executes the following sequence:
+1. **Request Intake**: The AI agent invokes `extract_context` with a target URL.
+2. **Browser Navigation**: The browser manager acquires a Playwright page instance and navigates to the specified URL.
+3. **Markup and Accessibility Capture**: The extraction module retrieves the raw HTML markup and generates a semantic ARIA snapshot of the document body.
+4. **State Fingerprinting**: The semantic cache applies an xxhash algorithm to the raw HTML to uniquely identify the page state.
+   * **Cache Hit**: If the hash matches an existing signature, the server returns the cached context in under 1ms, bypassing DOM parsing.
+   * **Cache Miss**: For new or modified pages, the extraction process proceeds.
+5. **Context Compression**: The compression module filters out styling, scripts, SVGs, and boilerplate structural elements (headers, footers). It isolates interactable components such as buttons, inputs, dropdowns, and links.
+6. **Task Classification**: A rule-based classifier evaluates the interactive elements to determine the page category (e.g., login, product search, checkout).
+7. **Delta Diff Calculation**: The difference engine compares the current UI elements against the last observed state, returning only the added or removed components.
+8. **Metrics Logging**: The metrics subsystem records data volume, compressed sizes, and efficiency ratios.
+9. **Payload Delivery**: A streamlined JSON payload containing the optimized UI elements, ARIA snapshot, and page metadata is returned to the requesting agent.
 
 ### 2. Process Flow Diagram
 ```mermaid
@@ -81,65 +87,64 @@ sequenceDiagram
 
 ---
 
-## Use Cases
+## Primary Use Cases
 
-Here are 10 key use cases where the Browser Optimizer MCP can be utilized:
+The Browser Optimizer MCP is designed to facilitate various AI-driven automation workflows:
 
-1. **AI Agent Cost Reduction**: Reduces token usage on dense web pages (like e-commerce portals or social media feeds) by up to 98%, dramatically lowering LLM API costs.
-2. **Structured Web Scraping**: Empowers LLM-based scrapers to locate and extract content from specific elements without parsing scripts, styles, or bloated HTML trees.
-3. **Automated UI/E2E Testing**: Helps developers run fast assertion checks on UI changes by using delta diffing to detect structural regressions.
-4. **Form Auto-Filling**: Provides clean, interactive element trees, allowing agents to fill forms, log in, or interact with custom widgets without parsing complex nested divs.
-5. **Real-time Page Monitoring**: Monitors active pages for updates using delta diffing, alerting agents only when new interactive components are added or removed.
-6. **Web Search & RAG Pipelines**: Acts as an efficient web crawler that strips boilerplates (headers, footers, etc.) and provides clean context for Retrieval-Augmented Generation.
-7. **Accessibility Compliance Audits**: Exposes semantic ARIA accessibility trees, letting automated agents inspect pages for accessibility compliance.
-8. **E-Commerce Monitoring**: Navigates product listings, classifies page types, and extracts price/stock updates with minimal payload sizes.
-9. **Dynamic Single Page Application (SPA) Automation**: Handles modern JavaScript-heavy frameworks by running Playwright locally, caching states, and delivering optimized components.
-10. **Multi-Agent Browser Sharing**: Serves as a standardized MCP bridge for multi-agent workflows, letting separate agents share, observe, and control the same browser session.
-
-and many more...
+1. **Cost Optimization for AI Agents**: Lowers token consumption on complex web pages (such as e-commerce platforms or social media feeds) by up to 98%, significantly reducing LLM API expenses.
+2. **Structured Data Extraction**: Enables LLM-based scrapers to identify and extract content efficiently without parsing scripts, styles, or excessive HTML nesting.
+3. **Automated UI and End-to-End Testing**: Facilitates rapid assertion checks on UI changes by leveraging delta diffing to identify structural regressions.
+4. **Intelligent Form Automation**: Supplies clean, interactive element trees, allowing agents to populate forms, authenticate, or interact with custom components seamlessly.
+5. **Real-time Page Monitoring**: Observes active pages for updates using delta diffing, alerting agents only when relevant interactive components change.
+6. **Web Search and RAG Pipelines**: Functions as an efficient crawler that removes boilerplate content and provides refined context for Retrieval-Augmented Generation workflows.
+7. **Accessibility Audits**: Exposes semantic ARIA accessibility trees, enabling automated agents to perform compliance inspections.
+8. **E-Commerce Monitoring**: Navigates product catalogs, categorizes page types, and extracts pricing or inventory updates with minimal data transfer.
+9. **Dynamic Single Page Application (SPA) Support**: Manages modern JavaScript-heavy frameworks by executing Playwright locally, caching states, and delivering processed components.
+10. **Multi-Agent Session Sharing**: Acts as a standardized MCP integration layer for multi-agent systems, allowing distinct agents to share and interact with a unified browser session.
 
 ---
 
-## 🛠️ MCP Tools Reference
+## MCP Tools Reference
 
-The server registers and exposes the following tools:
+The server exposes the following tools to the Model Context Protocol environment:
 
 | Tool | Parameters | Return Type | Description |
 | :--- | :--- | :--- | :--- |
 | `extract_context` | `url` (string) | `CompressedContext` | Navigates to a URL, performs cleanup and compression, runs page classification, and returns optimized UI and ARIA trees. |
 | `page_diff` | `url` (string) | `PageDiff` | Returns deltas (added/removed elements) compared to the last observed state of this URL. |
 | `execute_action` | `action` (string), `selector` (optional), `value` (optional) | `ActionResult` | Executes standard interactions (`click`, `type`, `select`, `scroll`, `wait`, `navigate`) on the active page. |
-| `summarize_page` | `url` (string) | `Dict` | Produces an instant text summary listing interactive element counts and text content snippets. |
-| `classify_page` | `url` (string) | `ClassificationResult` | Evaluates UI elements to identify the page category (e.g. login, search, survey). |
-| `wait_until_ready` | `url` (string), `timeout` (optional) | `ActionResult` | Navigates to a page and waits for browser stabilization. |
-| `cache_lookup` | `url` (string) | `Dict` | Directly queries the semantic cache for stored context. |
-| `get_metrics` | None | `Dict` | Retrieves telemetry (bytes saved, cache hit rate, total actions). |
+| `summarize_page` | `url` (string) | `Dict` | Produces a concise text summary detailing interactive element counts and relevant text snippets. |
+| `classify_page` | `url` (string) | `ClassificationResult` | Evaluates UI elements to categorize the page (e.g., login, search, survey). |
+| `wait_until_ready` | `url` (string), `timeout` (optional) | `ActionResult` | Navigates to a page and pauses execution until browser stabilization is achieved. |
+| `cache_lookup` | `url` (string) | `Dict` | Directly queries the semantic cache for a stored context entry. |
+| `get_metrics` | None | `Dict` | Retrieves telemetry data, including bytes saved, cache hit rate, and total actions performed. |
 
 ---
 
-## 📂 About the Code & Module Architecture
+## Architecture and Modules
 
-The codebase is structured modularly under the `app/` directory:
+The application is structured modularly within the `app/` directory to ensure maintainability and separation of concerns:
 
-* **`app/browser/manager.py`**: Controls the lifecycle of the async Playwright browser. Reuses page contexts to avoid startup overhead and manages navigation timeouts.
-* **`app/extractor/extractor.py`**: Siphons raw HTML and utilizes Playwright's latest `.aria_snapshot()` API to capture accessibility trees.
-* **`app/compressor/compressor.py`**: Houses DOM filters. Strips unneeded tags (scripts, styles, headers, footers, SVGs) and outputs a list of structured interactive UI controls.
-* **`app/classifier/classifier.py`**: Employs a heuristics-based scoring algorithm to classify pages into `LOGIN`, `SEARCH`, `SURVEY`, `CHECKOUT`, `PRODUCT`, or `DASHBOARD` states.
-* **`app/diff/diff.py`**: Compares consecutive observations on the same URL and generates a delta report (added and removed elements) using composite element fingerprints.
-* **`app/cache/cache.py`**: Manages an in-memory `cachetools.TTLCache` indexed by URL and validated via 64-bit `xxhash` signatures of page HTML.
-* **`app/executor/executor.py`**: Executes browser interactions (`click`, `type`, `select`, `scroll`, `wait`, `navigate`) deterministically.
-* **`app/schemas/schemas.py`**: Declares Pydantic data models enforcing contract compliance across modules and tools.
-* **`app/metrics/metrics.py`**: Logs context size reductions, cache hits/misses, and calculates cumulative byte savings.
+* **`app/browser/manager.py`**: Manages the async Playwright browser lifecycle. Reuses page contexts to minimize startup latency and handles navigation constraints.
+* **`app/extractor/extractor.py`**: Retrieves raw HTML and leverages the Playwright `.aria_snapshot()` API to capture accessibility structures.
+* **`app/compressor/compressor.py`**: Contains DOM filtering logic. Removes superfluous tags (scripts, styles, SVGs) and generates a structured list of UI controls.
+* **`app/classifier/classifier.py`**: Implements a heuristics-based scoring algorithm to categorize pages into defined states (`LOGIN`, `SEARCH`, `SURVEY`, `CHECKOUT`, `PRODUCT`, `DASHBOARD`).
+* **`app/diff/diff.py`**: Compares sequential observations of a URL and constructs a delta report utilizing composite element fingerprints.
+* **`app/cache/cache.py`**: Maintains an in-memory `cachetools.TTLCache` indexed by URL, validated via 64-bit `xxhash` HTML signatures.
+* **`app/executor/executor.py`**: Processes standard browser interactions deterministically.
+* **`app/schemas/schemas.py`**: Defines Pydantic data models to ensure strict contract compliance across all modules and tools.
+* **`app/metrics/metrics.py`**: Records data size reductions, cache performance metrics, and aggregate byte savings.
 
 ---
 
-## ⚙️ Setup & Installation
+## Setup and Installation
 
 ### 1. Prerequisites
-* Python 3.11 or newer.
-* Playwright dependencies installed on your system.
+* Python 3.11 or higher.
+* Node.js (optional, depending on external dependencies).
+* Playwright system dependencies.
 
-### 2. Installation Steps
+### 2. Standard Installation
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/browser-optimizer-mcp.git
@@ -147,18 +152,18 @@ cd browser-optimizer-mcp
 
 # Create and activate virtual environment
 python -m venv venv
-venv\Scripts\activate     # On Windows
-source venv/bin/activate  # On macOS/Linux
+venv\Scripts\activate     # Windows
+source venv/bin/activate  # macOS/Linux
 
-# Install dependencies
+# Install requirements
 pip install -r requirements.txt
 
 # Install Playwright browser binaries
 playwright install chromium
 ```
 
-### 3. Configuration
-Create a `.env` file in the project root:
+### 3. Environment Configuration
+Create a `.env` file in the root directory:
 ```env
 LOG_LEVEL=INFO
 HEADLESS=True
@@ -170,12 +175,14 @@ BROWSER_TIMEOUT=30000
 
 ---
 
-## 🖥️ Client Integration
+## Client Integration
 
-### 1. Claude Desktop Setup
-Add the configuration to your `claude_desktop_config.json` file (located at `%APPDATA%\Claude\claude_desktop_config.json` on Windows or `~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+### 1. Claude Desktop
+Add the following configuration to your `claude_desktop_config.json` file.
+* **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+* **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 
-#### For Windows (uses the `cmd` wrapper to handle folder spaces):
+#### Windows Configuration (using the `cmd` wrapper):
 ```json
 {
   "mcpServers": {
@@ -195,7 +202,7 @@ Add the configuration to your `claude_desktop_config.json` file (located at `%AP
 }
 ```
 
-#### For macOS / Linux:
+#### macOS / Linux Configuration:
 ```json
 {
   "mcpServers": {
@@ -210,9 +217,10 @@ Add the configuration to your `claude_desktop_config.json` file (located at `%AP
 }
 ```
 
-
-### 2. Antigravity IDE Setup
-Add this to your `mcp_config.json` file (located at `%USERPROFILE%\.gemini\config\mcp_config.json` on Windows or `~/.gemini/config/mcp_config.json` on macOS/Linux):
+### 2. Antigravity IDE
+Append this to your `mcp_config.json` file.
+* **Windows**: `%USERPROFILE%\.gemini\config\mcp_config.json`
+* **macOS/Linux**: `~/.gemini/config/mcp_config.json`
 
 ```json
 {
@@ -228,10 +236,10 @@ Add this to your `mcp_config.json` file (located at `%USERPROFILE%\.gemini\confi
 }
 ```
 
-### 3. Cursor Setup
-1. Go to **Settings** -> **Features** -> **MCP**.
-2. Click **+ Add New MCP Server**.
-3. Configure the parameters:
+### 3. Cursor
+1. Navigate to **Settings** -> **Features** -> **MCP**.
+2. Select **+ Add New MCP Server**.
+3. Apply the following settings:
    * **Name**: `browser-optimizer`
    * **Type**: `command`
    * **Command**: `C:\path\to\browser-optimizer-mcp\venv\Scripts\python.exe -m app.server.main`
@@ -240,13 +248,13 @@ Add this to your `mcp_config.json` file (located at `%USERPROFILE%\.gemini\confi
 
 ---
 
-## 📊 Benchmark & Tool Comparison
+## Benchmark and Tool Comparison
 
-Directly comparing the **Browser Optimizer MCP** against traditional browser automation agents highlights the efficiency gains:
+A direct comparison of the **Browser Optimizer MCP** against standard browser automation agents demonstrates substantial efficiency improvements:
 
 ### 1. Performance Comparison
 
-| Metric / Feature | Standard Browser Tools (Direct DOM/Screenshots) | Browser Optimizer MCP |
+| Metric / Feature | Standard Browser Tools | Browser Optimizer MCP |
 | :--- | :--- | :--- |
 | **Average Token Count (Google)** | ~50,000+ tokens | **~120 tokens** (97.7% reduction) |
 | **Average Token Count (HN)** | ~9,000+ tokens | **~1,500 tokens** (87.8% reduction) |
@@ -258,7 +266,7 @@ Directly comparing the **Browser Optimizer MCP** against traditional browser aut
 | **Inference Cost** | High ($0.15 - $1.00+ per step) | **Extremely Low** (80-95% cost reduction) |
 
 ### 2. Running the Benchmark Suite
-To run the benchmark suite against live public pages and verify these savings on your local machine:
+Execute the benchmark suite against live public pages to verify efficiency metrics locally:
 ```powershell
 $env:PYTHONPATH="."
 venv/Scripts/python scripts/benchmark.py
@@ -266,22 +274,40 @@ venv/Scripts/python scripts/benchmark.py
 
 ---
 
-## 🧪 Testing & Deployment
+## Testing and Deployment
 
-### Run Unit Tests
+### Running Unit Tests
+Execute the test suite using `pytest`:
 ```bash
 pytest tests/ -v
 ```
 
 ### Docker Deployment
+Deploy the service using Docker Compose:
 ```bash
 docker compose -f docker/docker-compose.yml up --build
 ```
 
 ---
 
-## 📄 License
+## Contributing
 
-Distributed under the MIT License. See [LICENSE](LICENSE) for more details.
+Contributions are welcome. Please ensure that your pull requests adhere to the established coding standards and include appropriate unit tests. Open an issue first to discuss significant architectural changes.
+
+---
+
+## Support and Troubleshooting
+
+If you encounter issues during installation or runtime:
+1. Run `browser-optimizer doctor` to diagnose environment inconsistencies.
+2. Verify that your Python version is `>= 3.11`.
+3. Check the `logs/` directory for detailed exception traces.
+4. Open an issue on the repository if the problem persists.
+
+---
+
+## License
+
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 Copyright (c) 2026 Manthan.

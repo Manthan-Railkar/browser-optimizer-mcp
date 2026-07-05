@@ -1,7 +1,16 @@
+"""
+State Difference Engine module.
+Tracks historical states of pages and computes incremental UI deltas (adds/removes).
+"""
+
 from typing import List, Dict, Any, Optional
 from app.utils.logger import logger
 
 class StateDifferenceEngine:
+    """
+    Computes differences between the currently observed UI element tree and the
+    previously recorded UI state for a specific URL, returning only the deltas.
+    """
     def __init__(self):
         # Maps URL to the list of elements from the last observation
         self.history: Dict[str, List[Dict[str, Any]]] = {}
@@ -9,7 +18,13 @@ class StateDifferenceEngine:
     def compute_diff(self, url: str, current_ui: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
         Compare the current list of UI elements with the last observed list for a URL.
-        Returns a dictionary with 'added', 'removed', and 'changed' elements.
+        
+        Args:
+            url (str): Target web address.
+            current_ui (list): List of dict elements currently found on the page.
+            
+        Returns:
+            dict: Delta report containing lists of 'added', 'removed', and 'changed' elements.
         """
         previous_ui = self.history.get(url, [])
         
@@ -52,9 +67,17 @@ class StateDifferenceEngine:
         }
 
     def clear_history(self, url: Optional[str] = None):
+        """
+        Purge the historical observations log for a specific URL or the entire session.
+        
+        Args:
+            url (str, optional): Target URL to clear. If None, purges all URLs.
+        """
         if url:
             self.history.pop(url, None)
         else:
             self.history.clear()
 
+# Shared difference engine instance
 difference_engine = StateDifferenceEngine()
+

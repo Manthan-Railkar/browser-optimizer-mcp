@@ -1,26 +1,64 @@
+"""
+Context compression engine.
+Strips out unneeded DOM nodes and extracts interactive UI elements to minimize token size.
+"""
+
 from bs4 import BeautifulSoup
 from app.utils.logger import logger
 
+# Non-essential elements to decompose
 IGNORED_TAGS = {"script", "style", "footer", "header", "noscript", "svg", "iframe"}
 
+# Interactive components to extract
 IMPORTANT_TAGS = {"button", "input", "textarea", "select", "label", "form", "a"}
 
 
 class ContextCompressor:
+    """
+    Cleans raw BeautifulSoup parsed DOM trees by removing scripts, styling, non-content blocks,
+    and isolates interactable elements to reduce character size.
+    """
 
     def clean_dom(self, soup):
+        """
+        Decomposes non-essential layout tags (styles, scripts, headers, footers).
+        
+        Args:
+            soup (BeautifulSoup): Sourced page DOM.
+            
+        Returns:
+            BeautifulSoup: Cleaned DOM.
+        """
         logger.info("Cleaning DOM...")
         for tag in soup.find_all(IGNORED_TAGS):
             tag.decompose()
         return soup
 
     def remove_empty(self, soup):
+        """
+        Recursively decompose empty tag nodes that have no text and no children.
+        
+        Args:
+            soup (BeautifulSoup): Cleaned DOM.
+            
+        Returns:
+            BeautifulSoup: Stripped DOM.
+        """
         for tag in soup.find_all():
             if not tag.get_text(strip=True) and not tag.find():
                 tag.decompose()
         return soup
 
     def extract_ui(self, soup):
+        """
+        Isolate interactable tags and compile their key descriptors (id, name, text, placeholder, type).
+        
+        Args:
+            soup (BeautifulSoup): Stripped DOM.
+            
+        Returns:
+            list: List of dict objects representing UI elements.
+        """
         ui = []
         for tag in soup.find_all(IMPORTANT_TAGS):
             ui.append({
@@ -35,6 +73,16 @@ class ContextCompressor:
         return ui
 
     def compress(self, extracted):
+        """
+        Execute the DOM optimization pipeline.
+        Strips DOM, extracts UI, compiles raw clean body text, and calculates compression ratios.
+        
+        Args:
+            extracted (dict): Payload from PageExtractor containing html, ax_tree, url, and title.
+            
+        Returns:
+            dict: Structured compressed context payload.
+        """
         soup = extracted["html"]
         ax_tree = extracted["ax_tree"]
         raw_html_length = extracted.get("raw_html_length", 0)
@@ -66,4 +114,5 @@ class ContextCompressor:
         return compressed
 
 
+# Shared compressor instance
 compressor = ContextCompressor()

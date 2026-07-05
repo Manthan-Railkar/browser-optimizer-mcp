@@ -1,12 +1,29 @@
+"""
+Rule-Based Action Executor module.
+Translates structured agent commands directly into Playwright browser interactions.
+"""
+
 from playwright.async_api import Page
 from typing import Dict, Any, Optional
 from app.utils.logger import logger
 
 class RuleBasedExecutor:
+    """
+    Executes standard actions directly on a Playwright Page.
+    Handles selectors, keystrokes, drop-down options, scrolling, and waits with automated timeouts.
+    """
     async def execute(self, page: Page, action: str, selector: Optional[str] = None, value: Optional[str] = None) -> Dict[str, Any]:
         """
         Execute a deterministic browser action on the current page.
-        Returns a dictionary with 'success' and 'message' keys.
+        
+        Args:
+            page (Page): Active Playwright Page instance.
+            action (str): Target action type (navigate, click, type, select, scroll, wait).
+            selector (str, optional): Target element selector string (CSS/XPath/Text).
+            value (str, optional): Input parameter value depending on action type.
+            
+        Returns:
+            dict: Status report containing 'success' boolean and 'message' description.
         """
         action = action.lower().strip()
         logger.info(f"Executing action: {action} | Selector: {selector} | Value: {value}")
@@ -60,4 +77,6 @@ class RuleBasedExecutor:
             logger.error(error_msg)
             return {"success": False, "message": error_msg}
 
+# Shared executor instance
 executor = RuleBasedExecutor()
+

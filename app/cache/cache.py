@@ -1,3 +1,8 @@
+"""
+Semantic Cache module.
+Fingerprints HTML structure using xxhash and caches compressed context to skip redundant loads.
+"""
+
 import time
 import xxhash
 from cachetools import TTLCache
@@ -6,6 +11,10 @@ from app.config.settings import settings
 from app.utils.logger import logger
 
 class SemanticCache:
+    """
+    In-memory caching system based on TTLCache.
+    Associates URLs with structural HTML hashes to serve pre-compressed payloads on identical pages.
+    """
     def __init__(self, enabled: Optional[bool] = None, ttl: Optional[int] = None, max_size: Optional[int] = None):
         # Local TTL Cache using settings.
         # Max size is number of pages, TTL is in seconds.
@@ -19,12 +28,27 @@ class SemanticCache:
         logger.info(f"Semantic Cache initialized: Enabled={self.enabled}, TTL={self.ttl}s, MaxSize={self.max_size}")
 
     def generate_hash(self, text: str) -> str:
-        """Generate a fast hash of the text content."""
+        """
+        Generate a fast, non-cryptographic 64-bit signature of the HTML payload.
+        
+        Args:
+            text (str): Raw target string.
+            
+        Returns:
+            str: Hex digest fingerprint.
+        """
         return xxhash.xxh64(text.encode('utf-8', errors='ignore')).hexdigest()
 
     def lookup(self, url: str, current_html: str) -> Optional[Dict[str, Any]]:
         """
-        Check if we have a valid cache entry for the page HTML and URL.
+        Query the cache for a given URL and check if the current page HTML matches the cached hash.
+        
+        Args:
+            url (str): Target URL key.
+            current_html (str): Freshly extracted HTML string to compare signatures.
+            
+        Returns:
+            dict, optional: Cached compressed context if matching, else None.
         """
         if not self.enabled:
             return None
@@ -48,7 +72,12 @@ class SemanticCache:
 
     def store(self, url: str, html: str, compressed_context: Dict[str, Any]):
         """
-        Cache the compressed context for a URL associated with its current HTML hash.
+        Store a compressed context payload along with the page's current HTML signature.
+        
+        Args:
+            url (str): Target URL key.
+            html (str): Fresh raw HTML markup to hash.
+            compressed_context (dict): Compressed UI representation.
         """
         if not self.enabled:
             return
@@ -63,8 +92,13 @@ class SemanticCache:
         logger.info(f"Cached context for URL: {url} (Hash: {page_hash})")
 
     def clear(self):
+        """
+        Flush all items from the cache.
+        """
         self._cache.clear()
         self._url_to_hash.clear()
         logger.info("Cache cleared")
 
+# Shared semantic cache instance
 semantic_cache = SemanticCache()
+

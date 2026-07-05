@@ -4,7 +4,7 @@ import sys
 
 logger.remove() 
 logger.add(
-    sys.stdout,
+    sys.stderr,
     level=settings.LOG_LEVEL,
     format=(
         "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
